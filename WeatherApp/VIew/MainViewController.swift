@@ -38,7 +38,7 @@ final class MainViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+        return stackView 
     }()
     
     private lazy var locationBUtton: UIButton = {
