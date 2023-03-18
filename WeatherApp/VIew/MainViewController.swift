@@ -9,7 +9,7 @@ import UIKit
 
 final class MainViewController: UIViewController {
     
-    private let weatherManager = WeatherManager()
+    private var weatherManager = WeatherManager()
     
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView()
@@ -151,6 +151,7 @@ final class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        weatherManager.delegate = self
         searchBar.delegate = self
         view.backgroundColor = .white
         setupUI()
@@ -242,5 +243,11 @@ extension MainViewController : UITextFieldDelegate {
             textField.placeholder = "Type something"
             return false
         }
+    }
+}
+
+extension MainViewController: WeatherManagerDelegate {
+    func didUpdateWeather(weather: WeatherModel) {
+        print(weather.temperature)
     }
 }
