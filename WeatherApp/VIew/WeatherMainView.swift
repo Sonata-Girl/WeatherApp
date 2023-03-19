@@ -1,26 +1,13 @@
 //
-//  MainViewController.swift
+//  WeatherMainView.swift
 //  WeatherApp
 //
-//  Created by Sonata Girl on 12.03.2023.
+//  Created by Sonata Girl on 19.03.2023.
 //
 
 import UIKit
-import CoreLocation
 
-final class MainViewController: UIViewController {
-    
-    private var weatherManager = WeatherManager()
-    private lazy var locationManager = CLLocationManager()
-    
-    private lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "background")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.clipsToBounds = true
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
+class WeatherMainView: UIView {
     
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
@@ -40,20 +27,20 @@ final class MainViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView 
+        return stackView
     }()
     
-    private lazy var locationButton: UIButton = {
+    private lazy var locationBUtton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setBackgroundImage(UIImage(systemName: "location.circle.fill"), for: .normal)
         button.tintColor = .label
-        button.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
+//        button.addTarget(self, action: #selector(buttonTapped(button:)), for: .touchUpInside)
 
         return button
     }()
     
-    private lazy var searchButton: UIButton = {
+    private lazy var searchBUtton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .label
@@ -63,7 +50,7 @@ final class MainViewController: UIViewController {
         return button
     }()
     
-    private lazy var searchBar: UITextField = {
+    lazy var searchBar: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.font = .systemFont(ofSize: 25)
@@ -78,7 +65,7 @@ final class MainViewController: UIViewController {
         return textField
     }()
     
-    private lazy var weatherImageView: UIImageView = {
+    lazy var weatherImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "sun.max")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +85,7 @@ final class MainViewController: UIViewController {
         return stackView
     }()
     
-    private lazy var degreesLabel: UILabel = {
+    lazy var degreesLabel: UILabel = {
         let label = UILabel()
         label.text = "20"
         label.font = UIFont.systemFont(ofSize: 80, weight: .black)
@@ -149,36 +136,25 @@ final class MainViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
-        
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
-        
-        weatherManager.delegate = self
-        searchBar.delegate = self
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupUI() {
         
-        view.addSubview(backgroundImageView)
+        addSubview(mainStackView)
         NSLayoutConstraint.activate([
-            backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-        
-        view.addSubview(mainStackView)
-        NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,constant: 20),
-            view.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor,constant: 20)
+            mainStackView.topAnchor.constraint(equalTo: topAnchor),
+            mainStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 20),
+            trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor,constant: 20)
         ])
         mainStackView.addArrangedSubview(searchStackView)
         NSLayoutConstraint.activate([
@@ -186,14 +162,14 @@ final class MainViewController: UIViewController {
             searchStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor)
         ])
         
-        searchStackView.addArrangedSubview(locationButton)
+        searchStackView.addArrangedSubview(locationBUtton)
         searchStackView.addArrangedSubview(searchBar)
-        searchStackView.addArrangedSubview(searchButton)
+        searchStackView.addArrangedSubview(searchBUtton)
         NSLayoutConstraint.activate([
-            locationButton.widthAnchor.constraint(equalToConstant: 40),
-            locationButton.heightAnchor.constraint(equalToConstant: 40),
-            searchButton.widthAnchor.constraint(equalToConstant: 40),
-            searchButton.heightAnchor.constraint(equalToConstant: 40)
+            locationBUtton.widthAnchor.constraint(equalToConstant: 40),
+            locationBUtton.heightAnchor.constraint(equalToConstant: 40),
+            searchBUtton.widthAnchor.constraint(equalToConstant: 40),
+            searchBUtton.heightAnchor.constraint(equalToConstant: 40)
         ])
         
         mainStackView.addArrangedSubview(weatherImageView)
@@ -220,70 +196,9 @@ final class MainViewController: UIViewController {
         ])
     }
     
-    @objc
-    private func searchButtonPressed(_ sender: UIButton) {
-        searchBar.text = ""
-        searchBar.endEditing(true)
-    }
-    
-    @objc
-    private func locationButtonTapped(_ sender: UIButton) {
-        searchBar.text = ""
-        locationManager.requestLocation()
-    }
-}
-
-extension MainViewController : UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        searchBar.endEditing(true)
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        if let city = searchBar.text {
-            weatherManager.fetchWeather(cityName: city)
-        }
-        
-        searchBar.text = ""
-    }
-    
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        if textField.text != "" {
-            return true
-        } else {
-            textField.placeholder = "Type something"
-            return false
-        }
-    }
-}
-
-extension MainViewController: WeatherManagerDelegate {
-    func didFailWithError(error: Error) {
-        print(error)
-    }
-    
-    func didUpdateWeather(_ weatherManager: WeatherManager, weather: WeatherModel) {
-        DispatchQueue.main.async {
-            self.degreesLabel.text = weather.temperatureString
-            self.weatherImageView.image = UIImage(systemName: weather.conditionName)
-            self.cityLabel.text = weather.cityName
-        }
-    }
-}
-
-// MARK: - CClocationManagerDelegate
-extension MainViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.last {
-            locationManager.stopUpdatingLocation()
-            let lat = location.coordinate.latitude
-            let lon = location.coordinate.longitude
-            weatherManager.fetchWeather(latitude: lat, longitude: lon)
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
-    }
+     @objc
+     private func searchButtonPressed(_ sender: UIButton) {
+         searchBar.text = "go"
+         searchBar.endEditing(true)
+     }
 }
