@@ -9,6 +9,15 @@ import UIKit
 
 class WeatherMainView: UIView {
     
+    private lazy var backgroundImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "background")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
+        return imageView
+    }()
+    
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.alignment = .trailing
@@ -30,27 +39,26 @@ class WeatherMainView: UIView {
         return stackView
     }()
     
-    private lazy var locationBUtton: UIButton = {
+    private lazy var locationButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setBackgroundImage(UIImage(systemName: "location.circle.fill"), for: .normal)
         button.tintColor = .label
-//        button.addTarget(self, action: #selector(buttonTapped(button:)), for: .touchUpInside)
-
+        button.addTarget(nil, action: #selector(MainViewController.locationButtonTapped), for: .touchUpInside)
         return button
     }()
     
-    private lazy var searchBUtton: UIButton = {
+    private lazy var searchButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .label
         button.setBackgroundImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        button.addTarget(self, action: #selector(searchButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(MainViewController.searchButtonPressed), for: .touchUpInside)
 
         return button
     }()
     
-    lazy var searchBar: UITextField = {
+    private lazy var searchBar: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.font = .systemFont(ofSize: 25)
@@ -65,7 +73,7 @@ class WeatherMainView: UIView {
         return textField
     }()
     
-    lazy var weatherImageView: UIImageView = {
+    private lazy var weatherImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "sun.max")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -85,7 +93,7 @@ class WeatherMainView: UIView {
         return stackView
     }()
     
-    lazy var degreesLabel: UILabel = {
+    private lazy var degreesLabel: UILabel = {
         let label = UILabel()
         label.text = "20"
         label.font = UIFont.systemFont(ofSize: 80, weight: .black)
@@ -149,27 +157,36 @@ class WeatherMainView: UIView {
     
     private func setupUI() {
         
+        addSubview(backgroundImageView)
+        NSLayoutConstraint.activate([
+            backgroundImageView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            backgroundImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundImageView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+        
         addSubview(mainStackView)
         NSLayoutConstraint.activate([
-            mainStackView.topAnchor.constraint(equalTo: topAnchor),
-            mainStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor)
+            mainStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            mainStackView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor,constant: 20),
+            safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor,constant: 20)
         ])
+        
         mainStackView.addArrangedSubview(searchStackView)
         NSLayoutConstraint.activate([
             searchStackView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor),
             searchStackView.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor)
         ])
         
-        searchStackView.addArrangedSubview(locationBUtton)
+        searchStackView.addArrangedSubview(locationButton)
         searchStackView.addArrangedSubview(searchBar)
-        searchStackView.addArrangedSubview(searchBUtton)
+        searchStackView.addArrangedSubview(searchButton)
         NSLayoutConstraint.activate([
-            locationBUtton.widthAnchor.constraint(equalToConstant: 40),
-            locationBUtton.heightAnchor.constraint(equalToConstant: 40),
-            searchBUtton.widthAnchor.constraint(equalToConstant: 40),
-            searchBUtton.heightAnchor.constraint(equalToConstant: 40)
+            locationButton.widthAnchor.constraint(equalToConstant: 40),
+            locationButton.heightAnchor.constraint(equalToConstant: 40),
+            searchButton.widthAnchor.constraint(equalToConstant: 40),
+            searchButton.heightAnchor.constraint(equalToConstant: 40)
         ])
         
         mainStackView.addArrangedSubview(weatherImageView)
@@ -219,11 +236,5 @@ class WeatherMainView: UIView {
     func setCityLabel(_ cityName: String) {
         self.cityLabel.text = cityName
     }
-    
-    
-     @objc
-     private func searchButtonPressed(_ sender: UIButton) {
-         searchBar.text = "go"
-         searchBar.endEditing(true)
-     }
+
 }
