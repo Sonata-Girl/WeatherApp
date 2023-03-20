@@ -53,7 +53,7 @@ class WeatherMainView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .label
         button.setBackgroundImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        button.addTarget(self, action: #selector(MainViewController.searchButtonPressed), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(MainViewController.searchButtonPressed), for: .touchUpInside)
 
         return button
     }()

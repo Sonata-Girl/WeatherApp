@@ -83,8 +83,7 @@ extension MainViewController: CLLocationManagerDelegate {
     }
 }
 
-extension MainViewController {
-    
+extension MainViewController {    
     @objc
     func searchButtonPressed(_ sender: UIButton) {
          mainView.textFieldEndEditing()
