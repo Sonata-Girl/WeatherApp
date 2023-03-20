@@ -153,8 +153,8 @@ class WeatherMainView: UIView {
         NSLayoutConstraint.activate([
             mainStackView.topAnchor.constraint(equalTo: topAnchor),
             mainStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor,constant: 20),
-            trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor,constant: 20)
+            mainStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor)
         ])
         mainStackView.addArrangedSubview(searchStackView)
         NSLayoutConstraint.activate([
@@ -195,6 +195,31 @@ class WeatherMainView: UIView {
             emptyView.heightAnchor.constraint(equalToConstant: 420)
         ])
     }
+    
+    func setupDelegateForTextField(_ viewController: UIViewController) {
+        searchBar.delegate = viewController as? MainViewController
+    }
+    
+    func textFieldEndEditing() {
+        searchBar.endEditing(true)
+    }
+    
+    func textFieldSetText(_ text: String) {
+        searchBar.text = text
+    }
+    
+    func setDegreesLabel(_ temperatureString: String) {
+        degreesLabel.text = temperatureString
+    }
+    
+    func setWeatherImageView(_ weatherName: String) {
+        weatherImageView.image = UIImage(systemName: weatherName)
+    }
+    
+    func setCityLabel(_ cityName: String) {
+        self.cityLabel.text = cityName
+    }
+    
     
      @objc
      private func searchButtonPressed(_ sender: UIButton) {
