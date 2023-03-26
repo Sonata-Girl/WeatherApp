@@ -56,8 +56,8 @@
 		670293B129BE574900D872E1 /* VIew */ = {
 			isa = PBXGroup;
 			children = (
-				670293B229BE575D00D872E1 /* MainViewController.swift */,
 				67C11D1C29C7937B006F5D69 /* WeatherMainView.swift */,
+				670293B229BE575D00D872E1 /* MainViewController.swift */,
 			);
 			path = VIew;
 			sourceTree = "<group>";

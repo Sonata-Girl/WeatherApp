@@ -27,7 +27,6 @@ final class MainViewController: UIViewController {
         weatherManager.delegate = self
         mainView.setupDelegateForTextField(self)
     }
-    
 }
 
 extension MainViewController : UITextFieldDelegate {

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class WeatherMainView: UIView {
+final class WeatherMainView: UIView {
     
     private lazy var backgroundImageView: UIImageView = {
         let imageView = UIImageView()
