@@ -65,10 +65,8 @@ final class WeatherMainView: UIView {
         textField.placeholder = "Search"
         textField.borderStyle = .roundedRect
         textField.clearsOnBeginEditing = true
-        textField.backgroundColor = .systemFill
         textField.textAlignment = .right
         textField.textColor = .label
-        textField.backgroundColor = .systemFill
         textField.returnKeyType = .go
         return textField
     }()
