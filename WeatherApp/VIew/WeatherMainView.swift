@@ -21,7 +21,7 @@ final class WeatherMainView: UIView {
     private lazy var mainStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.alignment = .trailing
-        stackView.spacing = 10
+        stackView.spacing = 3
         stackView.axis = .vertical
         stackView.distribution = .fill
         stackView.contentMode = .scaleToFill
@@ -94,9 +94,8 @@ final class WeatherMainView: UIView {
     private lazy var degreesLabel: UILabel = {
         let label = UILabel()
         label.text = "20"
-        label.font = UIFont.systemFont(ofSize: 80, weight: .black)
+        label.font = UIFont.systemFont(ofSize: 60, weight: .black)
         label.textColor = .label
-//        label.textColor = .black
         label.contentMode = .left
         label.textAlignment = .right
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -106,8 +105,7 @@ final class WeatherMainView: UIView {
     private lazy var signTempLabel: UILabel = {
         let label = UILabel()
         label.text = "°"
-        label.font = UIFont.systemFont(ofSize: 100, weight: .light)
-//        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 60, weight: .light)
         label.textColor = .label
         label.contentMode = .left
         label.textAlignment = .left
@@ -118,8 +116,7 @@ final class WeatherMainView: UIView {
     private lazy var typeTempLabel: UILabel = {
         let label = UILabel()
         label.text = "C"
-        label.font = UIFont.systemFont(ofSize: 100, weight: .light)
-//        label.textColor = .darkGray
+        label.font = UIFont.systemFont(ofSize: 60, weight: .light)
         label.textColor = .label
         label.contentMode = .left
         label.textAlignment = .left
@@ -137,6 +134,15 @@ final class WeatherMainView: UIView {
         return label
     }()
     
+    private lazy var bottomView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.layer.cornerRadius = 20
+        view.backgroundColor = .green
+        return view
+    }()
+    
     private lazy var emptyView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -145,6 +151,7 @@ final class WeatherMainView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .white
         setupUI()
     }
     
@@ -189,8 +196,8 @@ final class WeatherMainView: UIView {
         
         mainStackView.addArrangedSubview(weatherImageView)
         NSLayoutConstraint.activate([
-            weatherImageView.widthAnchor.constraint(equalToConstant: 120),
-            weatherImageView.heightAnchor.constraint(equalToConstant: 120)
+            weatherImageView.widthAnchor.constraint(equalToConstant: 80),
+            weatherImageView.heightAnchor.constraint(equalToConstant: 80)
         ])
         
         mainStackView.addArrangedSubview(tempStackView)
@@ -203,11 +210,18 @@ final class WeatherMainView: UIView {
         NSLayoutConstraint.activate([
             cityLabel.heightAnchor.constraint(equalToConstant: 28)
         ])
-        
-        mainStackView.addArrangedSubview(emptyView)
+//
+//        mainStackView.addArrangedSubview(emptyView)
+//        NSLayoutConstraint.activate([
+//            emptyView.widthAnchor.constraint(equalToConstant: 240),
+//            emptyView.heightAnchor.constraint(equalToConstant: 420)
+//        ])
+//
+        mainStackView.addArrangedSubview(bottomView)
         NSLayoutConstraint.activate([
-            emptyView.widthAnchor.constraint(equalToConstant: 240),
-            emptyView.heightAnchor.constraint(equalToConstant: 420)
+            bottomView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor),
+            bottomView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor)
+//            bottomView.bottomAnchor.constraint(equalTo: mainStackView.bottomAnchor)
         ])
     }
     

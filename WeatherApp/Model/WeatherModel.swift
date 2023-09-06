@@ -11,7 +11,8 @@ struct WeatherModel {
     let conditionId: Int
     let cityName: String
     let temperature: Double
-    
+    let dateTxt: String = ""
+  
     var temperatureString: String {
         return String(format: "%.1f", temperature)
     }
@@ -28,4 +29,13 @@ struct WeatherModel {
         default: return "cloud"
         }
     }
+    
+    var date: Date? {
+        guard dateTxt.isEmpty else {return nil}
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        return formatter.date(from: dateTxt) ?? nil
+    }
+    
 }
