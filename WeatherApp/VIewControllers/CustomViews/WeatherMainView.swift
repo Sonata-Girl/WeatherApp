@@ -134,13 +134,15 @@ final class WeatherMainView: UIView {
         return label
     }()
     
-    private lazy var bottomView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.clipsToBounds = true
-        view.layer.cornerRadius = 20
-        view.backgroundColor = .green
-        return view
+    private lazy var bottomView = WeatherWeekView()
+    
+    private lazy var switchWeatherWeek: UISegmentedControl = {
+        let segmentedControl = UISegmentedControl(items: ["Three days", "Week"])
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.selectedSegmentTintColor = .white.withAlphaComponent(0.7)
+        segmentedControl.addTarget(self, action: #selector(switchTypeOfWeather(_:)), for: .valueChanged)
+        return segmentedControl
     }()
     
     private lazy var emptyView: UIView = {
@@ -148,10 +150,11 @@ final class WeatherMainView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = .clear
+
         setupUI()
     }
     
@@ -205,23 +208,29 @@ final class WeatherMainView: UIView {
         tempStackView.addArrangedSubview(signTempLabel)
         tempStackView.addArrangedSubview(typeTempLabel)
         
-        mainStackView.addArrangedSubview(cityLabel)
-        mainStackView.addArrangedSubview(cityLabel)
+        let stackView = UIStackView()
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        stackView.addArrangedSubview(switchWeatherWeek)
+        stackView.addArrangedSubview(cityLabel)
+        
+//        mainStackView.addArrangedSubview(cityLabel)
+        mainStackView.addArrangedSubview(stackView)
         NSLayoutConstraint.activate([
             cityLabel.heightAnchor.constraint(equalToConstant: 28)
         ])
-//
+
 //        mainStackView.addArrangedSubview(emptyView)
 //        NSLayoutConstraint.activate([
 //            emptyView.widthAnchor.constraint(equalToConstant: 240),
-//            emptyView.heightAnchor.constraint(equalToConstant: 420)
+//            emptyView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.height/8)
 //        ])
-//
+
         mainStackView.addArrangedSubview(bottomView)
         NSLayoutConstraint.activate([
             bottomView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor),
-            bottomView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor)
-//            bottomView.bottomAnchor.constraint(equalTo: mainStackView.bottomAnchor)
+            bottomView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: mainStackView.bottomAnchor)
         ])
     }
     
@@ -248,5 +257,14 @@ final class WeatherMainView: UIView {
     func setCityLabel(_ cityName: String) {
         self.cityLabel.text = cityName
     }
-
+    
+    func setBottomViewWeek(weekWeatherList: WeatherModels, threeDayWeatherList: WeatherModels) {
+        self.bottomView.configureView(weekWeatherList: weekWeatherList, threeDayWeatherList: threeDayWeatherList)
+    }
+    
+    @objc private func switchTypeOfWeather(_ sender: UISegmentedControl) {
+        let typeOfTableView = sender.selectedSegmentIndex == 0 ? TableViewSourceType.threeDays : TableViewSourceType.week
+        self.bottomView.reloadSourceTable(typeOfTableView)
+    }
+    
 }

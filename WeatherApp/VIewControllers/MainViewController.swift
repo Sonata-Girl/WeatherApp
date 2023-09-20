@@ -10,14 +10,13 @@ import CoreLocation
 
 final class MainViewController: UIViewController {
     
-    private var weatherManager = WeatherManager()
+    var weatherManager = WeatherManager()
     private lazy var locationManager = CLLocationManager()
     
     private lazy var mainView = WeatherMainView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         view = mainView
         
         locationManager.delegate = self
@@ -53,6 +52,7 @@ extension MainViewController : UITextFieldDelegate {
 }
 
 extension MainViewController: WeatherManagerDelegate {
+    
     func didFailWithError(error: Error) {
         print(error)
     }
@@ -62,6 +62,12 @@ extension MainViewController: WeatherManagerDelegate {
             self.mainView.setDegreesLabel(weather.temperatureString)
             self.mainView.setWeatherImageView(weather.conditionName)
             self.mainView.setCityLabel(weather.cityName)
+        }
+    }
+
+    func didUpdateWeekWeather(_ weatherModelsForPresent: WeatherModelsForPresent) {
+        DispatchQueue.main.async {
+            self.mainView.setBottomViewWeek(weekWeatherList: weatherModelsForPresent.weekWeatherList, threeDayWeatherList: weatherModelsForPresent.threeDayWeatherList)
         }
     }
 }
