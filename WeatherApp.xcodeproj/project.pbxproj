@@ -18,7 +18,6 @@
 		67C11D1D29C7937B006F5D69 /* WeatherMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C11D1C29C7937B006F5D69 /* WeatherMainView.swift */; };
 		67C8A50629C1077400E879C7 /* WeatherManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C8A50529C1077400E879C7 /* WeatherManager.swift */; };
 		67C8A50829C1EFF300E879C7 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C8A50729C1EFF300E879C7 /* WeatherData.swift */; };
-		67F753F32ABB624B001E5827 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F753F22ABB624B001E5827 /* TestViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +34,6 @@
 		67C11D1C29C7937B006F5D69 /* WeatherMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherMainView.swift; sourceTree = "<group>"; };
 		67C8A50529C1077400E879C7 /* WeatherManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManager.swift; sourceTree = "<group>"; };
 		67C8A50729C1EFF300E879C7 /* WeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
-		67F753F22ABB624B001E5827 /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +60,6 @@
 			isa = PBXGroup;
 			children = (
 				670293B229BE575D00D872E1 /* MainViewController.swift */,
-				67F753F22ABB624B001E5827 /* TestViewController.swift */,
 				67F753ED2AB31173001E5827 /* CustomViews */,
 				674659262AA91E69006BE209 /* Cells */,
 			);
@@ -195,7 +192,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67F753F32ABB624B001E5827 /* TestViewController.swift in Sources */,
 				676174E929B525450080D7E0 /* AppDelegate.swift in Sources */,
 				67C8A50829C1EFF300E879C7 /* WeatherData.swift in Sources */,
 				674659282AA91E7D006BE209 /* WeatherTableViewCell.swift in Sources */,

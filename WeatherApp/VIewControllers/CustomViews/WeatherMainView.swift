@@ -155,6 +155,8 @@ final class WeatherMainView: UIView {
         super.init(frame: frame)
         backgroundColor = .clear
 
+        bottomView.delegate = self
+        
         setupUI()
     }
     
@@ -267,4 +269,10 @@ final class WeatherMainView: UIView {
         self.bottomView.reloadSourceTable(typeOfTableView)
     }
     
+}
+
+extension WeatherMainView: WeatherWeekUpdater {
+    func weatherDidSwitch() {
+        switchWeatherWeek.selectedSegmentIndex = switchWeatherWeek.selectedSegmentIndex == 0 ? 1 : 0
+    }
 }

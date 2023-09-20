@@ -11,42 +11,73 @@ enum TableViewSourceType {
     case week, threeDays
 }
 
+protocol WeatherWeekUpdater {
+    func weatherDidSwitch()
+}
+
 final class WeatherWeekView: UIView {
     
     private var tableSourceType: TableViewSourceType = .threeDays
     private var weekWeatherList: WeatherModels?
     private var threeDayWeatherList: WeatherModels?
+    private var pageNumber = 0
+    
+    var delegate: WeatherWeekUpdater?
    
-    private lazy var tableView: UITableView = {
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.isPagingEnabled = true
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.delegate = self
+        
+        return scrollView
+    }()
+    
+    private lazy var tableViewThreeDays: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.layer.borderColor = UIColor.blue.withAlphaComponent(0.1).cgColor
+//        tableView.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         tableView.layer.cornerRadius = 30
-        tableView.layer.borderWidth = 2
+//        tableView.layer.borderWidth = 2
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .clear
         tableView.allowsSelection = false
-        
+        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        tableView.dataSource = self
+        tableView.delegate = self
+       
+        return tableView
+    }()
+    
+    private lazy var tableViewWeek: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+//        tableView.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
+        tableView.layer.cornerRadius = 30
+//        tableView.layer.borderWidth = 2
+        tableView.layer.masksToBounds = true
+        tableView.backgroundColor = .clear
+        tableView.allowsSelection = false
+        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        tableView.dataSource = self
+        tableView.delegate = self
+       
         return tableView
     }()
     
     init() {
         super.init(frame: .zero)
-        tableView.dataSource = self
-        tableView.delegate = self
-        setupGestures()
         setupUI()
     }
     
-    func configureView(tableSourceType: TableViewSourceType = .threeDays,
-                       weekWeatherList: WeatherModels,
+    func configureView(weekWeatherList: WeatherModels,
                        threeDayWeatherList: WeatherModels) {
-        self.tableSourceType = tableSourceType
         self.weekWeatherList = weekWeatherList
         self.threeDayWeatherList = threeDayWeatherList
         
-        loadTableSource(tableSourceType)
-        tableView.reloadData()
+        tableViewThreeDays.reloadData()
+        tableViewWeek.reloadData()
     }
     
     @available(*, unavailable)
@@ -59,96 +90,77 @@ final class WeatherWeekView: UIView {
         layer.cornerRadius = 30
         clipsToBounds = true
         backgroundColor = .white.withAlphaComponent(0.3)
-        
-        addSubview(tableView)    
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
-        ])
-    }
+                 
+        scrollView.addSubview(tableViewThreeDays)
+        scrollView.addSubview(tableViewWeek)
+        addSubview(scrollView)
 
-    private func setupGestures() {
-        let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(tableViewLeftSwipe))
-        leftSwipe.direction = .left
-        let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(tableViewRightSwipe))
-        rightSwipe.direction = .right
-        tableView.addGestureRecognizer(leftSwipe)
-        tableView.addGestureRecognizer(rightSwipe)
-    }
-    
-    private func loadTableSource(_ typeOfTableView: TableViewSourceType?) {
-        if typeOfTableView == nil {
-            tableSourceType = tableSourceType == .threeDays ? .week : .threeDays
-        } else {
-            tableSourceType = typeOfTableView ?? .threeDays
-        }
-        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+
+        NSLayoutConstraint.activate([
+            tableViewThreeDays.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            tableViewThreeDays.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            tableViewThreeDays.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            tableViewThreeDays.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
+        ])
+
+        NSLayoutConstraint.activate([
+            tableViewWeek.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            tableViewWeek.leadingAnchor.constraint(equalTo: tableViewThreeDays.trailingAnchor),
+            tableViewWeek.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            tableViewWeek.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
+            tableViewWeek.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor)
+        ])
+        
     }
 
     func reloadSourceTable(_ typeOfTableView: TableViewSourceType?) {
-        loadTableSource(typeOfTableView)
-        tableView.reloadData()
+        tableSourceType = typeOfTableView ?? .threeDays
+        if typeOfTableView == .threeDays {
+            pageNumber -= 1
+            tableViewThreeDays.reloadData()
+        } else {
+            pageNumber += 1
+            tableViewWeek.reloadData()
+        }
+        
+        //  тут номер страницы умножается на ширину скрола, так передвигаем страницы на + 1 или - 1
+        let xOffset = CGFloat(pageNumber) * scrollView.frame.width
+        scrollView.setContentOffset(CGPoint(x: xOffset, y: 0), animated: true)
     }
-    
-    @objc private func tableViewLeftSwipe() {
-        reloadSourceTable(nil)
-    }
-
-    @objc private func tableViewRightSwipe() {
-        reloadSourceTable(nil)
-    }
-    
 }
 
 extension WeatherWeekView: UITableViewDataSource, UITableViewDelegate {
   
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch tableSourceType {
-        case .week:
-            return weekWeatherList?.count ?? 0
-        case .threeDays:
+        if tableView == tableViewThreeDays {
             return threeDayWeatherList?.count ?? 0
+        } else {
+           return weekWeatherList?.count ?? 0
         }
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        view.tintColor = #colorLiteral(red: 0.7209929824, green: 0.8699142337, blue: 0.8820225596, alpha: 1).withAlphaComponent(0.5)
+        view.tintColor = #colorLiteral(red: 0.7209929824, green: 0.8699142337, blue: 0.8820225596, alpha: 1).withAlphaComponent(0.1)
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return switchTableViewCell(indexPath: indexPath)
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-    
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch tableSourceType {
-        case .week:
-            return tableView.frame.size.height / 7
-        case .threeDays:
-            return tableView.frame.size.height / 3
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch tableSourceType {
-        case .week:
-            return "Week"
-        case .threeDays:
-            return "Three days"
-        }
-    }
-    
-    
-    private func switchTableViewCell(indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier,
                                                        for: indexPath) as? WeatherTableViewCell else { return UITableViewCell()}
+      
+        var weatherItem: WeatherModel?
         
-        let weatherItem = weekWeatherList?[indexPath.row]
+        if tableView == tableViewThreeDays {
+            weatherItem = threeDayWeatherList?[indexPath.row]
+        } else {
+            weatherItem = weekWeatherList?[indexPath.row]
+        }
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         cell.configureCell(temperatureString: weatherItem?.temperatureString,
@@ -156,6 +168,43 @@ extension WeatherWeekView: UITableViewDataSource, UITableViewDelegate {
                            timeText: "\(String(weatherItem?.dayNumber ?? 0)) \(weatherItem?.monthString ?? "")")
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        if tableView == tableViewThreeDays {
+            return tableView.frame.size.height / 3
+        } else {
+            return tableView.frame.size.height / 7
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if tableView == tableViewThreeDays {
+            return "Three days"
+        } else {
+            return "Week"
+        }
+    }
+}
+
+extension WeatherWeekView: UIScrollViewDelegate {
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        // тут вычисляем номер страницы поделив отступ по х у скрола (он будет либо 0 либо + своя ширина для каждой таблицы в скроле)
+        let newPageNumber = Int(round(scrollView.contentOffset.x / scrollView.frame.size.width))
+        print("Page Number: \(pageNumber)")
         
+        if newPageNumber != pageNumber {
+            tableSourceType = tableSourceType == .threeDays ? .week : .threeDays
+            pageNumber = newPageNumber
+            print("Page Number: \(pageNumber)")
+            print("Page Number: \(tableSourceType)")
+           
+            delegate?.weatherDidSwitch()
+        }
     }
 }
