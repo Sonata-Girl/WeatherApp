@@ -216,7 +216,6 @@ final class WeatherMainView: UIView {
         stackView.addArrangedSubview(switchWeatherWeek)
         stackView.addArrangedSubview(cityLabel)
         
-//        mainStackView.addArrangedSubview(cityLabel)
         mainStackView.addArrangedSubview(stackView)
         NSLayoutConstraint.activate([
             cityLabel.heightAnchor.constraint(equalToConstant: 28)

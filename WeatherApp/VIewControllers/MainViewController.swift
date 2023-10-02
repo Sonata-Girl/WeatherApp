@@ -10,7 +10,7 @@ import CoreLocation
 
 final class MainViewController: UIViewController {
     
-    var weatherManager = WeatherManager()
+    private var weatherManager = WeatherManager()
     private lazy var locationManager = CLLocationManager()
     
     private lazy var mainView = WeatherMainView()
@@ -20,9 +20,9 @@ final class MainViewController: UIViewController {
         view = mainView
         
         locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestLocation()
-        
+        locationManager.requestWhenInUseAuthorization() // запрос разрешения?
+        locationManager.requestLocation() // запрос геолокации
+       
         weatherManager.delegate = self
         mainView.setupDelegateForTextField(self)
     }
@@ -88,7 +88,8 @@ extension MainViewController: CLLocationManagerDelegate {
     }
 }
 
-extension MainViewController {    
+extension MainViewController {
+    
     @objc
     func searchButtonPressed(_ sender: UIButton) {
          mainView.textFieldEndEditing()

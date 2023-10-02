@@ -37,9 +37,7 @@ final class WeatherWeekView: UIView {
     private lazy var tableViewThreeDays: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-//        tableView.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         tableView.layer.cornerRadius = 30
-//        tableView.layer.borderWidth = 2
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .clear
         tableView.allowsSelection = false
@@ -53,9 +51,7 @@ final class WeatherWeekView: UIView {
     private lazy var tableViewWeek: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
-//        tableView.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         tableView.layer.cornerRadius = 30
-//        tableView.layer.borderWidth = 2
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .clear
         tableView.allowsSelection = false
